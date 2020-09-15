@@ -1,21 +1,20 @@
-"""Snake, classic arcade game.
+#A00827826 Edgar Castillo
+#A01570852 Luis Martínez
 
-Exercises
-
-1. How do you make the snake faster or slower?
-2. How can you make the snake go around the edges?
-3. How would you move the food?
-4. Change the snake to respond to arrow keys.
-
+"""
+Programa del juego snake.
 """
 
 from turtle import *
 from random import randrange
 from freegames import square, vector
 
+#Vector con los 5 colores que se pueden presentar (comida y víbora)
 color = ['gray','blue','green','black','yellow']
 snakeIndex=randrange(5)
 foodIndex=randrange(5)
+
+#Si se llegan a repetir, los vuelve a mezclar aleatoriamente hasta que sean distintos.
 while snakeIndex == foodIndex:
     snakeIndex=randrange(5)
     foodIndex=randrange(5)
@@ -23,11 +22,37 @@ while snakeIndex == foodIndex:
 food = vector(0, 0)
 snake = [vector(10, 0)]
 aim = vector(0, -10)
+cont = 0
 
 def change(x, y):
     "Change snake direction."
     aim.x = x
     aim.y = y
+    global cont
+    cont = cont + 1
+    
+    """
+    Si la comida está dentro de la ventana y el usuario ha dado un movimiento (esto es modificable, pueden ser
+    más movimientos) la primera se moverá hacia cualquier dirección, una cantidad de 10 pixeles. Si se sale de
+    la ventana, reposicionará la comida a una ubicación aleatoria y mandará un mensaje.
+    """
+    if inside(food):
+        if(cont == 1):
+            index = randrange(1,5)
+            if (index == 1):
+                food.x += 10
+            elif(index == 2):
+                food.y += 10
+            elif(index == 3):
+                food.x -= 10
+            else:
+                food.y -= 10
+            cont = 0;
+    else:
+        food.x = randrange(-15, 15) * 10
+        food.y = randrange(-15, 15) * 10
+        print('La comida se salió del tablero.')
+        cont = 0
 
 def inside(head):
     "Return True if head inside boundaries."
@@ -54,7 +79,7 @@ def move():
 
     clear()
 
-    
+    #Se usa el índice aleatorio que se haya obtenido en un inicio
     for body in snake:
         square(body.x, body.y, 9, color[snakeIndex])
 
